@@ -1,0 +1,296 @@
+/* Kata: siden er et skuffearkiv. Samme språk som appen (Filing): salvie, kremkartong,
+   blekkontur og en hard skygge rett ned til høyre. Fontene ligger på siden selv (fonts/). */
+
+:root {
+  --sage: #8fa882;
+  --tray: #7e8f6b;
+  --dot: #6e7f5c;
+  --card: #f6f2e4;
+  --raised: #fbf8ee;
+  --ink: #2b2b24;
+  --soft: #4a4735;
+  --faint: #9a937a;
+  --green: #2f7a38;
+  --amber: #f0c070;
+  --red: #c2542b;
+  --spent: #e6dcc0;
+  --witness: #bfd4b2;
+  --peers: #efeadb;
+
+  --belt-beginner: #f2efe6;
+  --belt-easy: #e8c84a;
+  --belt-medium: #b5511f;
+  --belt-hard: #2f7a38;
+  --belt-expert: #2e6fb0;
+  --belt-extreme: #6e4526;
+
+  --display: "Tanker", "Arial Narrow", Impact, sans-serif;
+  --text: "Satoshi", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --edge: 2px solid var(--ink);
+  --shadow: 4px 4px 0 var(--ink);
+  --radius: 14px;
+  --gutter: clamp(16px, 4vw, 40px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--sage);
+  color: var(--ink);
+  font: 500 1.0625rem/1.55 var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--green); text-underline-offset: 3px; text-decoration-thickness: 2px; }
+a:hover { color: var(--ink); }
+
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+
+.wrap { width: min(1120px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+
+.skip {
+  position: absolute; left: -999px; top: 8px; z-index: 10;
+  background: var(--card); border: var(--edge); border-radius: 8px; padding: 8px 12px;
+}
+.skip:focus { left: 8px; }
+
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-transform: uppercase; line-height: 0.95; letter-spacing: 0.01em; margin: 0; }
+h1 { font-size: clamp(3.4rem, 9.4vw, 7.4rem); }
+.hero h1 { font-size: clamp(3.2rem, 7.6vw, 6.4rem); }
+h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
+h3 { font-size: 1.6rem; }
+p { margin: 0 0 1em; }
+
+.eyebrow {
+  font: 800 0.78rem/1 var(--text);
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink);
+  margin: 0 0 14px;
+}
+
+/* ---------- Kort: alt som kan tas i er kartong ---------- */
+.card {
+  background: var(--card);
+  border: var(--edge);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font: 800 0.95rem/1 var(--text); letter-spacing: 0.06em; text-transform: uppercase;
+  text-decoration: none;
+  padding: 15px 22px; min-height: 48px;
+  background: var(--green); color: var(--card);
+  border: var(--edge); border-radius: 12px; box-shadow: var(--shadow);
+  cursor: pointer;
+}
+.button:hover { color: var(--card); transform: translate(1px, 1px); box-shadow: 3px 3px 0 var(--ink); }
+.button:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--ink); }
+.button.quiet { background: var(--card); color: var(--ink); }
+.button.quiet:hover { color: var(--ink); }
+.button[aria-disabled="true"] { background: var(--spent); color: var(--soft); cursor: default; box-shadow: var(--shadow); transform: none; }
+/* Til appen er i butikken: en knapp uten lenke (store.js gjør den til en lenke). */
+.button.soon, .button.soon:hover { text-align: center; background: var(--spent); color: var(--ink); cursor: default; transform: none; box-shadow: var(--shadow); }
+@media (prefers-reduced-motion: reduce) { .button:hover, .button:active { transform: none; } }
+
+/* ---------- Topp ---------- */
+header.top { padding: 22px 0 0; }
+header.top .wrap { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.mark {
+  font: 400 2.2rem/1 var(--display); text-transform: uppercase; letter-spacing: 0.02em;
+  color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 12px;
+}
+.mark img { width: 38px; height: 38px; border: var(--edge); border-radius: 9px; box-shadow: 2px 2px 0 var(--ink); }
+.mark:hover { color: var(--ink); }
+header.top nav { margin-left: auto; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+header.top nav a:not(.button) { color: var(--ink); font-weight: 700; text-decoration: none; }
+header.top nav a:not(.button):hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+header.top .button { padding: 11px 16px; min-height: 42px; font-size: 0.8rem; }
+@media (max-width: 720px) { header.top nav a:not(.button) { display: none; } }
+
+/* ---------- Forside ---------- */
+.hero { padding: clamp(36px, 6vw, 80px) 0 clamp(48px, 7vw, 96px); }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+@media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } }
+.hero .lede { font-size: clamp(1.1rem, 2vw, 1.3rem); max-width: 34ch; margin: 22px 0 28px; font-weight: 500; }
+.hero .actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+/* Hintet: den delen av appen siden viser fram i stedet for å beskrive. */
+.demo { padding: 14px; }
+.strip {
+  background: var(--raised); border: var(--edge); border-radius: 12px; padding: 12px 14px 14px;
+  margin-bottom: 12px;
+}
+.strip-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.strip-title { font: 900 0.78rem/1.2 var(--text); letter-spacing: 0.1em; text-transform: uppercase; }
+.ticks { display: inline-flex; gap: 4px; }
+.ticks i { width: 14px; height: 5px; border-radius: 3px; background: var(--spent); border: 1.5px solid var(--ink); display: block; }
+.ticks i.on { background: var(--ink); }
+.strip p { margin: 0 0 12px; font-size: 0.95rem; line-height: 1.45; min-height: 4.4em; color: var(--ink); }
+.strip .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.strip .row .links { font-size: 0.85rem; font-weight: 700; color: var(--soft); }
+.strip .button { padding: 12px 18px; min-height: 44px; font-size: 0.82rem; }
+
+.board {
+  --cell: min(calc((100vw - 2 * var(--gutter) - 28px - 8px) / 9), 46px);
+  display: grid; grid-template-columns: repeat(9, var(--cell)); grid-template-rows: repeat(9, var(--cell));
+  width: max-content; margin: 0 auto;
+  border: 3px solid var(--ink); background: var(--raised); border-radius: 4px;
+}
+.cell {
+  position: relative; display: grid; place-items: center;
+  font: 700 calc(var(--cell) * 0.52)/1 var(--text); color: var(--ink);
+  border-right: 1px solid rgba(43, 43, 36, 0.22); border-bottom: 1px solid rgba(43, 43, 36, 0.22);
+  transition: background-color 0.18s;
+}
+.cell:nth-child(9n + 3), .cell:nth-child(9n + 6) { border-right: 2px solid var(--ink); }
+.cell:nth-child(9n) { border-right: 0; }
+.cell:nth-child(n + 19):nth-child(-n + 27), .cell:nth-child(n + 46):nth-child(-n + 54) { border-bottom: 2px solid var(--ink); }
+.cell:nth-child(n + 73) { border-bottom: 0; }
+.cell.shade { background: var(--spent); }
+.cell.target { background: var(--amber); }
+.cell.witness::after {
+  content: ""; position: absolute; inset: 14%; border: 2px solid var(--ink); border-radius: 50%;
+}
+.cell.mine { color: var(--green); }
+.cell .note {
+  position: absolute; right: 7%; top: 3%; font: 800 calc(var(--cell) * 0.3)/1 var(--text); color: var(--soft);
+}
+.cell.struck .note { color: var(--red); text-decoration: line-through; text-decoration-thickness: 2px; }
+.demo-caption { margin: 12px 4px 0; font-size: 0.82rem; color: var(--soft); text-align: center; }
+
+/* ---------- Seksjoner ---------- */
+section { padding: clamp(48px, 7vw, 96px) 0; }
+.head { max-width: 40rem; margin-bottom: clamp(28px, 4vw, 48px); }
+.head p:last-child { margin-bottom: 0; }
+.head .sub { font-size: 1.15rem; margin-top: 18px; }
+
+.band { background: var(--card); border-block: var(--edge); }
+/* Den mørke seksjonen: skjermbildene lyser mot blekk. Kontrast over 8:1 på all tekst. */
+.night {
+  background: var(--ink);
+  background-image: radial-gradient(#45453a 1.4px, transparent 1.6px);
+  background-size: 14px 14px;
+  color: var(--card);
+  border-block: var(--edge);
+}
+.night h2 { color: var(--card); }
+.night .eyebrow { color: var(--amber); }
+.night a { color: var(--amber); }
+
+/* Nivåene: skuffefaner i beltefargene. Fargen står bare på fanen, som i appen. */
+.levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 28px; padding-top: 14px; }
+@media (max-width: 960px) { .levels { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .levels { grid-template-columns: 1fr; } }
+.folder { position: relative; padding: 26px 20px 20px; display: flex; flex-direction: column; }
+.folder .tab {
+  position: absolute; left: 18px; top: -16px;
+  padding: 7px 14px 5px; border: var(--edge); border-bottom: 0; border-radius: 10px 10px 0 0;
+  font: 400 1.2rem/1 var(--display); text-transform: uppercase; letter-spacing: 0.03em;
+}
+.folder h3 { font-size: 1.25rem; font-family: var(--text); font-weight: 900; text-transform: none; letter-spacing: 0; line-height: 1.2; margin: 0 0 4px; }
+.folder .tech { margin: auto 0 0; padding: 12px 0 0; border-top: 1.5px dashed var(--faint); font-size: 0.95rem; font-weight: 700; color: var(--soft); }
+
+/* Skjermbildene */
+.shots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; align-items: start; }
+@media (max-width: 960px) { .shots { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; margin-inline: auto; gap: 36px 24px; } }
+@media (max-width: 420px) { .shots { gap: 28px 16px; } .night .shot figcaption { font-size: 0.95rem; } .night .shot figcaption span { font-size: 0.85rem; } }
+.shot { margin: 0; }
+/* Skjermene står i Apples iPhone-ramme, bakt inn i bildet; skyggen følger formen. */
+.shot img { width: 100%; height: auto; aspect-ratio: 735 / 1500; filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.22)); }
+.shot figcaption { margin-top: 18px; font-weight: 700; }
+.shot figcaption span { display: block; font-weight: 500; color: var(--soft); font-size: 0.95rem; margin-top: 4px; }
+.night .shot img { filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.45)); }
+.night .shot figcaption { color: var(--card); font-size: 1.05rem; }
+.night .shot figcaption span { color: var(--spent); }
+
+/* Rolig med vilje */
+.calm { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 960px) { .calm { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .calm { grid-template-columns: 1fr; } }
+.calm .card { padding: 20px 18px 18px; }
+.calm h3 { font-family: var(--text); font-weight: 900; text-transform: none; font-size: 1.15rem; line-height: 1.2; letter-spacing: 0; margin-bottom: 8px; }
+.calm p { margin: 0; font-size: 0.97rem; color: var(--soft); }
+
+.twocol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 760px) { .twocol { grid-template-columns: 1fr; } }
+.plan { padding: 26px 24px; }
+.plan h3 { margin-bottom: 14px; }
+.plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.plan li { padding-left: 26px; position: relative; font-weight: 500; }
+.plan li::before { content: ""; position: absolute; left: 2px; top: 0.5em; width: 11px; height: 11px; border: var(--edge); border-radius: 3px; background: var(--card); }
+.plan.plus li::before { background: var(--amber); }
+.plan .note { margin: 16px 0 0; font-size: 0.9rem; color: var(--soft); }
+
+.closing { text-align: left; }
+.closing .card { padding: clamp(28px, 5vw, 56px); display: grid; gap: 22px; justify-items: start; background: var(--card); }
+.closing h2 { max-width: 16ch; }
+.closing p { margin: 0; max-width: 34rem; }
+.app-icon { width: 96px; height: 96px; border: var(--edge); border-radius: 22px; box-shadow: var(--shadow); }
+
+/* Forsiden: telefonen med hintet, og de fem ikonene under knappene. */
+.phone { margin: 0; justify-self: center; width: min(300px, 100%); }
+.phone img { aspect-ratio: 735 / 1500; filter: drop-shadow(0 16px 26px rgba(43, 43, 36, 0.28)); }
+.phone figcaption { margin-top: 16px; font-size: 0.9rem; font-weight: 700; color: var(--ink); text-align: center; }
+@media (max-width: 900px) { .phone { width: min(300px, 78%); } }
+.icon-row { list-style: none; margin: 34px 0 0; padding: 0; display: flex; gap: 10px; flex-wrap: wrap; }
+.icon-row svg { width: 50px; height: 50px; display: block; box-shadow: 3px 3px 0 var(--ink); }
+
+/* Spillene: ett kort per spill, med ikonet i stort. */
+.games { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 22px; }
+.game { display: flex; flex-direction: column; gap: 16px; padding: 20px 18px; }
+.game svg { flex: none; width: 76px; height: 76px; box-shadow: 3px 3px 0 var(--ink); }
+.game h3 { font-size: 1.6rem; margin: 0 0 8px; }
+/* Flere spill på vei: en stiplet rad under kortene, som det uskarpe kortet i appen. */
+.more-games { margin: 22px 0 0; padding: 18px 22px; border: 2px dashed var(--ink); border-radius: 14px; text-align: center; color: var(--ink); }
+@media (max-width: 1040px) { .games { grid-template-columns: repeat(6, minmax(0, 1fr)); } .game { grid-column: span 2; } .game:nth-child(4) { grid-column: 2 / span 2; } }
+@media (max-width: 760px) {
+  .games { grid-template-columns: 1fr; gap: 18px; }
+  .game, .game:nth-child(4) { grid-column: auto; flex-direction: row; align-items: flex-start; }
+  .game svg { width: 64px; height: 64px; }
+}
+.game p { margin: 0; font-size: 0.97rem; color: var(--soft); }
+
+/* Hintet: teksten til venstre, brettet til høyre. */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+@media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+.split h2 { margin-bottom: 26px; }
+.steps { counter-reset: step; list-style: none; margin: 0 0 24px; padding: 0; display: grid; gap: 14px; }
+.steps li { counter-increment: step; position: relative; padding-left: 52px; min-height: 38px; }
+.steps li::before {
+  content: counter(step); position: absolute; left: 0; top: -2px; width: 36px; height: 36px;
+  display: grid; place-items: center; font: 400 1.3rem/1 var(--display);
+  background: var(--amber); border: var(--edge); border-radius: 8px; box-shadow: 2px 2px 0 var(--ink);
+}
+.split > div > p { max-width: 36rem; }
+
+.plan.challenge li::before { background: var(--ink); }
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 28px; }
+@media (max-width: 860px) { .trio { grid-template-columns: 1fr; } }
+.trio .card, .calm .card { padding: 20px 18px 18px; }
+.trio h3 { font-family: var(--text); font-weight: 900; text-transform: none; font-size: 1.15rem; line-height: 1.2; letter-spacing: 0; margin-bottom: 8px; }
+.trio p { margin: 0; font-size: 0.97rem; color: var(--soft); }
+.aside { margin: 36px 0 0; max-width: 40rem; }
+
+/* ---------- Tekstsider (personvern, støtte) ---------- */
+.page { padding: clamp(36px, 6vw, 72px) 0 clamp(56px, 8vw, 110px); }
+.page .sheet { padding: clamp(24px, 5vw, 52px); max-width: 46rem; margin-inline: auto; }
+.page h1 { font-size: clamp(2.6rem, 7vw, 4.4rem); margin-bottom: 8px; }
+.page h2 { font: 900 1.25rem/1.25 var(--text); text-transform: none; letter-spacing: 0; margin: 2em 0 0.5em; }
+.page .meta { color: var(--soft); font-size: 0.95rem; margin-bottom: 1.6em; }
+.page ul { padding-left: 1.2em; }
+.page li { margin-bottom: 0.4em; }
+.page .answer { font-weight: 700; }
+.plain { background: var(--raised); border: var(--edge); border-radius: 12px; padding: 16px 18px; margin: 0 0 1.4em; font-weight: 700; }
+
+footer { padding: 36px 0 52px; border-top: var(--edge); background: var(--card); }
+footer .wrap { display: flex; gap: 14px 28px; flex-wrap: wrap; align-items: baseline; justify-content: space-between; }
+footer nav { display: flex; gap: 8px 22px; flex-wrap: wrap; }
+footer a { color: var(--ink); font-weight: 700; }
+footer small { color: var(--soft); font-size: 0.9rem; }

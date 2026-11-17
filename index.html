@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kata – Sudoku &amp; Logic Puzzles: hints that show you why</title>
+  <meta name="description" content="Eight logic puzzles for iPhone: Sudoku, Tenbin, Light Up, Star Battle, Killer Sudoku, Pipes, Ink Levels and Nonogram. Every hint ends in the cells that prove the move. Daily boards, lessons, dark mode, no ads, no tracking, no account.">
+  <link rel="canonical" href="https://fram-studio.github.io/">
+  <meta name="theme-color" content="#8fa882">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/img/favicon.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kata">
+  <meta property="og:url" content="https://fram-studio.github.io/">
+  <meta property="og:title" content="Kata – Sudoku &amp; Logic Puzzles">
+  <meta property="og:description" content="Hints that show you why. Eight logic puzzles, from Sudoku to Nonogram, with daily boards and no ads.">
+  <meta property="og:image" content="https://fram-studio.github.io/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Kata icon and the words Hints that show you why, beside a sudoku hint and a Star Battle hint.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Kata – Sudoku &amp; Logic Puzzles">
+  <meta name="twitter:description" content="Hints that show you why. Eight logic puzzles, daily boards, dark mode, no ads, no tracking, no account.">
+  <meta name="twitter:image" content="https://fram-studio.github.io/img/og.png">
+  <meta name="twitter:image:alt" content="The Kata icon and the words Hints that show you why, beside a sudoku hint and a Star Battle hint.">
+
+  <link rel="preload" href="/fonts/tanker-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/fonts/fonts.css">
+  <link rel="stylesheet" href="/style.css">
+  <!-- Seks spill fra 1.2: kortene står tre og tre. style.css er laget for fem (5 kolonner, og det
+       fjerde kortet flyttet inn på nettbrett). Hører hjemme i style.css under .games; flyttes dit. -->
+  <style>
+    @media (min-width: 761px) {
+      .games { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .game, .game:nth-child(4) { grid-column: auto; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Kata – Sudoku & Logic Puzzles",
+    "alternateName": "Kata",
+    "description": "Eight logic puzzles: Sudoku, Tenbin, Light Up, Star Battle, Killer Sudoku, Pipes, Ink Levels and Nonogram. Every hint ends in the cells that prove the move.",
+    "url": "https://fram-studio.github.io/",
+    "image": "https://fram-studio.github.io/img/og.png",
+    "operatingSystem": "iOS",
+    "applicationCategory": "GameApplication",
+    "applicationSubCategory": "Puzzle",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "publisher": { "@type": "Organization", "name": "SLAB Studios", "email": "madebyslab@gmail.com" }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the content</a>
+
+  <!-- Spillikonene, tegnet som i appen (`PuzzleIcon.swift`): et 3 × 3-utsnitt av brettet i blekk på kremhvitt. -->
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="bulb" viewBox="0 0 100 100">
+        <path d="M28.08 59.92A31 31 0 1 1 71.92 59.92Q64 62 62 70L38 70Q36 62 28.08 59.92Z" fill="#f0c070" stroke="#2b2b24" stroke-width="7.5" stroke-linejoin="round"/>
+        <rect x="37" y="74" width="26" height="8" rx="3" fill="#2b2b24"/>
+        <rect x="41" y="85" width="18" height="7" rx="3" fill="#2b2b24"/>
+      </symbol>
+      <symbol id="star" viewBox="0 0 100 100">
+        <path d="M50 4 61.8 37.2 97.6 37.9 69.1 59.8 79.4 94.1 50 73.6 20.6 94.1 30.9 59.8 2.4 37.9 38.2 37.2Z" fill="#2b2b24" stroke="#2b2b24" stroke-width="6" stroke-linejoin="round"/>
+      </symbol>
+      <g id="grid3">
+        <path d="M20 0V60M40 0V60M0 20H60M0 40H60" stroke="#2b2b24" stroke-opacity=".35" stroke-width="1"/>
+      </g>
+      <symbol id="ico-sudoku" viewBox="0 0 60 60">
+        <rect width="60" height="60" fill="#fbf8ee"/>
+        <use href="#grid3"/>
+        <g font-family="Satoshi, system-ui, sans-serif" font-weight="700" font-size="13" text-anchor="middle">
+          <text x="10" y="14.6" fill="#2b2b24">5</text>
+          <text x="50" y="34.6" fill="#54784a">8</text>
+          <text x="30" y="54.6" fill="#2b2b24">3</text>
+        </g>
+        <rect x="1" y="1" width="58" height="58" fill="none" stroke="#2b2b24" stroke-width="2"/>
+      </symbol>
+      <symbol id="ico-mini" viewBox="0 0 60 60">
+        <rect width="60" height="60" fill="#fbf8ee"/>
+        <path d="M10 0V60M20 0V60M40 0V60M50 0V60M0 10H60M0 30H60M0 50H60" stroke="#2b2b24" stroke-opacity=".3" stroke-width=".75"/>
+        <path d="M30 0V60M0 20H60M0 40H60" stroke="#2b2b24" stroke-width="2.1"/>
+        <g font-family="Satoshi, system-ui, sans-serif" font-weight="700" font-size="8" text-anchor="middle">
+          <text x="15" y="7.9" fill="#2b2b24">4</text>
+          <text x="45" y="17.9" fill="#2b2b24">2</text>
+          <text x="25" y="37.9" fill="#54784a">6</text>
+          <text x="55" y="47.9" fill="#2b2b24">1</text>
+        </g>
+        <rect x="1" y="1" width="58" height="58" fill="none" stroke="#2b2b24" stroke-width="2"/>
+      </symbol>
+      <!-- Killer Sudoku (`KillerIconCages`): en L på 12 over tre ruter og to ruter på 9, stiplet innenfor
+           rutene, linja brutt rundt summen, og et 7 i spillerens grønne blekk. -->
+      <symbol id="ico-killer" viewBox="0 0 60 60">
+        <rect width="60" height="60" fill="#fbf8ee"/>
+        <use href="#grid3"/>
+        <g fill="none" stroke="#2b2b24" stroke-width="1.1" stroke-dasharray="2.6 1.8">
+          <path d="M2.6 2.6H37.4V17.4H17.4V37.4H2.6Z"/>
+          <path d="M42.6 22.6H57.4V57.4H42.6Z"/>
+        </g>
+        <g fill="#fbf8ee"><rect x="1.6" y="1.2" width="10" height="9"/><rect x="41.6" y="21.2" width="6" height="9"/></g>
+        <g font-family="Satoshi, system-ui, sans-serif" font-weight="700" font-size="7.2" fill="#2b2b24">
+          <text x="2.6" y="8.5">12</text>
+          <text x="42.6" y="28.5">9</text>
+        </g>
+        <text x="10" y="34.8" fill="#54784a" font-family="Satoshi, system-ui, sans-serif" font-weight="700" font-size="11.2" text-anchor="middle">7</text>
+        <rect x="1" y="1" width="58" height="58" fill="none" stroke="#2b2b24" stroke-width="2"/>
+      </symbol>
+      <symbol id="ico-tenbin" viewBox="0 0 60 60">
+        <rect width="60" height="60" fill="#fbf8ee"/>
+        <use href="#grid3"/>
+        <g fill="#2b2b24">
+          <circle cx="10" cy="10" r="4.6"/><circle cx="30" cy="30" r="4.6"/><circle cx="50" cy="50" r="4.6"/>
+        </g>
+        <g fill="none" stroke="#2b2b24" stroke-width="1.8">
+          <circle cx="30" cy="10" r="3.7"/><circle cx="50" cy="10" r="3.7"/><circle cx="10" cy="30" r="3.7"/><circle cx="30" cy="50" r="3.7"/>
+        </g>
+        <rect x="1" y="1" width="58" height="58" fill="none" stroke="#2b2b24" stroke-width="2"/>
+      </symbol>
+      <symbol id="ico-lightup" viewBox="0 0 60 60">
+        <rect width="60" height="60" fill="#fbf8ee"/>
+        <g fill="#f0c070" fill-opacity=".42"><rect x="0" y="20" width="60" height="20"/><rect x="40" y="40" width="20" height="20"/></g>
+        <use href="#grid3"/>
+        <rect x="40" y="0" width="20" height="20" fill="#2b2b24"/>
+        <text x="50" y="14" fill="#f6f2e4" font-family="Satoshi, system-ui, sans-serif" font-weight="700" font-size="11" text-anchor="middle">1</text>
+        <use href="#bulb" x="42" y="22" width="16" height="16"/>
+        <rect x="1" y="1" width="58" height="58" fill="none" stroke="#2b2b24" stroke-width="2"/>
+      </symbol>
+      <symbol id="ico-pipes" viewBox="0 0 60 60">
+        <rect width="60" height="60" fill="#fbf8ee"/>
+        <use href="#grid3"/>
+        <g fill="#2b2b24"><rect x="7.6" y="7.6" width="12.4" height="4.8"/><rect x="27.6" y="7.6" width="12.4" height="4.8"/><rect x="27.6" y="7.6" width="4.8" height="12.4"/><rect x="20" y="7.6" width="12.4" height="4.8"/><rect x="40" y="7.6" width="12.4" height="4.8"/><rect x="7.6" y="27.6" width="12.4" height="4.8"/><rect x="7.6" y="27.6" width="4.8" height="12.4"/><rect x="27.6" y="20" width="4.8" height="12.4"/><rect x="27.6" y="27.6" width="12.4" height="4.8"/><rect x="27.6" y="27.6" width="4.8" height="12.4"/><rect x="20" y="27.6" width="12.4" height="4.8"/><rect x="47.6" y="27.6" width="4.8" height="12.4"/><rect x="40" y="27.6" width="12.4" height="4.8"/><rect x="7.6" y="40" width="4.8" height="12.4"/><rect x="27.6" y="40" width="4.8" height="12.4"/><rect x="47.6" y="40" width="4.8" height="12.4"/><circle cx="30" cy="30" r="4.6"/></g>
+        <g fill="#f0c070" stroke="#2b2b24" stroke-width="1"><rect x="6.6" y="6.6" width="6.8" height="6.8"/><rect x="46.6" y="6.6" width="6.8" height="6.8"/><rect x="6.6" y="46.6" width="6.8" height="6.8"/><rect x="26.6" y="46.6" width="6.8" height="6.8"/><rect x="46.6" y="46.6" width="6.8" height="6.8"/></g>
+        <rect x="1" y="1" width="58" height="58" fill="none" stroke="#2b2b24" stroke-width="2"/>
+      </symbol>
+      <symbol id="ico-ink" viewBox="0 0 60 60">
+        <rect width="60" height="60" fill="#fbf8ee"/>
+        <g fill="#2f7a38"><rect x="0" y="20" width="20" height="20"/><rect x="0" y="40" width="20" height="20"/><rect x="20" y="40" width="20" height="20"/><rect x="40" y="40" width="20" height="20"/></g>
+        <use href="#grid3"/>
+        <path d="M20 0V20M20 20V40M20 40H40M40 40H60M40 40V60" stroke="#2b2b24" stroke-width="2.5" stroke-linecap="square"/>
+        <rect x="1" y="1" width="58" height="58" fill="none" stroke="#2b2b24" stroke-width="2"/>
+      </symbol>
+      <symbol id="ico-nonogram" viewBox="0 0 60 60">
+        <rect width="60" height="60" fill="#fbf8ee"/>
+        <g fill="#2f7a38"><rect x="20" y="0" width="20" height="20"/><rect x="0" y="20" width="20" height="20"/><rect x="20" y="20" width="20" height="20"/><rect x="40" y="20" width="20" height="20"/><rect x="0" y="40" width="20" height="20"/><rect x="40" y="40" width="20" height="20"/></g>
+        <use href="#grid3"/>
+        <path d="M25.8 45.8 34.2 54.2M34.2 45.8 25.8 54.2" stroke="#2b2b24" stroke-opacity=".6" stroke-width="1.6" stroke-linecap="round"/>
+        <rect x="1" y="1" width="58" height="58" fill="none" stroke="#2b2b24" stroke-width="2"/>
+      </symbol>
+      <symbol id="ico-starbattle" viewBox="0 0 60 60">
+        <rect width="60" height="60" fill="#fbf8ee"/>
+        <use href="#grid3"/>
+        <use href="#star" x="25" y="5" width="10" height="10"/>
+        <use href="#star" x="45" y="45" width="10" height="10"/>
+        <path d="M40 0V40M0 40H60" stroke="#2b2b24" stroke-width="2.5" stroke-linecap="square"/>
+        <rect x="1" y="1" width="58" height="58" fill="none" stroke="#2b2b24" stroke-width="2"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="top">
+    <div class="wrap">
+      <a class="mark" href="/"><img src="/img/icon.png" alt="" width="38" height="38">Kata</a>
+      <nav aria-label="Main">
+        <a href="#games">Games</a>
+        <a href="#proof">Hints</a>
+        <a href="#learn">Learn</a>
+        <a href="#plus">Free and Pro</a>
+        <span class="button quiet store soon" data-store data-short>Coming soon</span>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="h1">
+      <div class="wrap">
+        <div>
+          <p class="eyebrow">Sudoku &amp; logic puzzles for iPhone</p>
+          <h1 id="h1">Hints that show you why.</h1>
+          <p class="lede">When you're stuck, Kata shows you the cells that make the next move necessary, in eight logic puzzles, so the next board is one you solve yourself.</p>
+          <div class="actions">
+            <span class="button store soon" data-store>Coming soon on the App Store</span>
+            <a class="button quiet" href="#games">The eight games</a>
+          </div>
+          <ul class="icon-row" aria-label="The eight games">
+            <li><svg viewBox="0 0 60 60" role="img" aria-label="Sudoku"><use href="#ico-sudoku"/></svg></li>
+            <li><svg viewBox="0 0 60 60" role="img" aria-label="Tenbin"><use href="#ico-tenbin"/></svg></li>
+            <li><svg viewBox="0 0 60 60" role="img" aria-label="Light Up"><use href="#ico-lightup"/></svg></li>
+            <li><svg viewBox="0 0 60 60" role="img" aria-label="Star Battle"><use href="#ico-starbattle"/></svg></li>
+            <li><svg viewBox="0 0 60 60" role="img" aria-label="Killer Sudoku"><use href="#ico-killer"/></svg></li>
+            <li><svg viewBox="0 0 60 60" role="img" aria-label="Pipes"><use href="#ico-pipes"/></svg></li>
+            <li><svg viewBox="0 0 60 60" role="img" aria-label="Ink Levels"><use href="#ico-ink"/></svg></li>
+            <li><svg viewBox="0 0 60 60" role="img" aria-label="Nonogram"><use href="#ico-nonogram"/></svg></li>
+          </ul>
+        </div>
+        <figure class="phone">
+          <img src="/img/hint-proof.webp" width="735" height="1500" fetchpriority="high" alt="A Medium sudoku with a hint open: Scan the 9s. The 9 fits only in the amber cell; the 9s that rule out the other empty cells in its row are circled.">
+          <figcaption>A hint names its technique: the amber cell, and the circled digits that prove it.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="band" id="games" aria-labelledby="games-h">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Eight puzzles</p>
+          <h2 id="games-h">One idea in every game.</h2>
+          <p class="sub">Each game has a daily board on every grade, random boards whenever you want more, and a short demo the first time you open it. Every board has a single solution that logic reaches.</p>
+        </div>
+        <ul class="games">
+          <li class="card game">
+            <svg viewBox="0 0 60 60" aria-hidden="true"><use href="#ico-sudoku"/></svg>
+            <div>
+              <h3>Sudoku</h3>
+              <p>The classic, nine by nine. Six grades from Beginner to Extreme, each defined by the techniques a board needs, not by a score.</p>
+            </div>
+          </li>
+          <li class="card game">
+            <svg viewBox="0 0 60 60" aria-hidden="true"><use href="#ico-tenbin"/></svg>
+            <div>
+              <h3>Tenbin</h3>
+              <p>Fill the grid with two symbols. Never three alike in a row, each line half and half, and no two lines the same.</p>
+            </div>
+          </li>
+          <li class="card game">
+            <svg viewBox="0 0 60 60" aria-hidden="true"><use href="#ico-lightup"/></svg>
+            <div>
+              <h3>Light Up</h3>
+              <p>Place bulbs until every white cell is lit. Bulbs can't light each other, and a number tells how many bulbs touch it.</p>
+            </div>
+          </li>
+          <li class="card game">
+            <svg viewBox="0 0 60 60" aria-hidden="true"><use href="#ico-starbattle"/></svg>
+            <div>
+              <h3>Star Battle</h3>
+              <p>One star in every row, column and region, and stars never touch, not even at a corner. Under the ellipsis menu on its card, Two stars has boards with two stars in each row, column and region, ten by ten and twelve by twelve.</p>
+            </div>
+          </li>
+          <li class="card game">
+            <svg viewBox="0 0 60 60" aria-hidden="true"><use href="#ico-killer"/></svg>
+            <div>
+              <h3>Killer Sudoku</h3>
+              <p>Sudoku by sums: the digits in a cage add up to the number in its corner and never repeat. Easy and Medium start with a few digits, Hard with none. With Kata Pro.</p>
+            </div>
+          </li>
+        </ul>
+        <p class="more-games"><strong>Three more with Kata Pro.</strong> In <strong>Pipes</strong> you turn the knobs until every pipe joins one net from the ink well, and the net never closes a loop. In <strong>Ink Levels</strong> you fill tanks with ink until every number fits the ink squares in its row or column. In <strong>Nonogram</strong> you fill squares with ink until every row and column matches its numbers. Which puzzle would you like next? Tap <strong>Send feedback</strong> in the app and tell us.</p>
+      </div>
+    </section>
+
+    <!-- Hintet vises i stedet for å beskrives: ett hint, i tre trinn, på et ekte brett (demo.js). -->
+    <section id="proof" aria-labelledby="proof-h">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">Hints that explain</p>
+          <h2 id="proof-h">Three steps. Stop at the one you need.</h2>
+          <ol class="steps">
+            <li><strong>The name of the technique.</strong> Often that is enough to see it yourself.</li>
+            <li><strong>Where to look.</strong> The row, column, box, cage or region the move is in.</li>
+            <li><strong>The proof.</strong> The exact cells that make the move necessary, marked on the board.</li>
+          </ol>
+          <p>A hint first points out entries that don't fit, before it suggests anything new. In sudoku it works from your own notes when they are sound, and a wrong digit gets a <strong>Why not?</strong> that follows it a few steps until the board contradicts itself.</p>
+        </div>
+
+        <div class="card demo" id="demo" role="group" aria-label="Try a hint, step by step">
+          <div class="strip">
+            <div class="strip-head">
+              <span class="strip-title" id="demo-title">Try a hidden single</span>
+              <span class="ticks" aria-hidden="true"><i class="on"></i><i></i><i></i></span>
+            </div>
+            <p id="demo-body" aria-live="polite">A digit that fits in only one cell of a box.</p>
+            <div class="row">
+              <span class="links" id="demo-step">Step 1 of 3</span>
+              <button class="button" type="button" id="demo-next">Show where</button>
+            </div>
+          </div>
+          <div class="board" id="board" role="img" aria-label="A sudoku board. The hint has not shown where to look yet."></div>
+          <p class="demo-caption">A real daily board. Tap the button to take the hint further.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="night" id="see" aria-labelledby="see-h">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">In every game</p>
+          <h2 id="see-h">The proof, drawn on the board.</h2>
+        </div>
+        <div class="shots">
+          <figure class="shot">
+            <img src="/img/tenbin-hint.webp" width="735" height="1500" loading="lazy" alt="A Tenbin hint named Pair: two rings side by side, so the amber cell beside them takes a dot.">
+            <figcaption>Tenbin<span>Two alike side by side: the cell on either end takes the other symbol.</span></figcaption>
+          </figure>
+          <!-- TODO: killer screenshot. Et Killer-hint på beviset (f.eks. The 45 rule: `-screen killer:medium:rule45:hint3`),
+               laget med docs/store-screenshots/tools/site.py som de andre, som site/img/killer-hint.webp. Fire bilder står
+               fire i bredden (.shots); med et femte må ett ut, eller rutenettet i style.css endres. -->
+          <!-- <figure class="shot">
+            <img src="/img/killer-hint.webp" width="735" height="1500" loading="lazy" alt="A Killer Sudoku hint named The 45 rule: the cages inside a row cover all but one cell, so the amber cell is 45 minus their sum.">
+            <figcaption>Killer Sudoku<span>A row adds up to 45: the one cell its cages leave out is the difference.</span></figcaption>
+          </figure> -->
+          <figure class="shot">
+            <img src="/img/light-up-hint.webp" width="735" height="1500" loading="lazy" alt="A Light Up hint named Satisfied: a 0 takes no bulbs, so the amber cell next to it gets a dot.">
+            <figcaption>Light Up<span>A number has all its bulbs: its other neighbours get none.</span></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="/img/star-battle-hint.webp" width="735" height="1500" loading="lazy" alt="A Star Battle hint named Confined: one region's star has to be in a single column, so the rest of that column is marked empty.">
+            <figcaption>Star Battle<span>A region sits in one column: the rest of that column is empty.</span></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="/img/lesson-x-wing.webp" width="735" height="1500" loading="lazy" alt="The X-Wing lesson: a sudoku with the two columns and two rows of the pattern marked, and the proof written out below.">
+            <figcaption>A sudoku lesson<span>X-Wing on a real board, with the proof written out.</span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="pace" aria-labelledby="pace-h">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Your pace</p>
+          <h2 id="pace-h">The clock is your choice.</h2>
+        </div>
+        <div class="twocol">
+          <div class="card plan">
+            <h3>Clock off</h3>
+            <ul>
+              <li>No clock</li>
+              <li>Hints whenever you like</li>
+              <li>Mistakes are yours to find, or marked if you turn on Show mistakes</li>
+            </ul>
+          </div>
+          <div class="card plan challenge">
+            <h3>Clock on</h3>
+            <ul>
+              <li>A clock that counts, or counts down from a time limit if you set one</li>
+              <li>A limit on hints per board: none, three, or no limit</li>
+              <li>Lives for wrong entries: three, five, or off</li>
+            </ul>
+          </div>
+        </div>
+        <div class="trio">
+          <div class="card"><h3>A daily board on every grade</h3><p>The same board for everyone on the same grade, in every game. And random boards whenever you want more.</p></div>
+          <div class="card"><h3>How to play, one tap away</h3><p>The rules with small examples on every game, and a short demo the first time you open one, where you make the moves yourself.</p></div>
+          <div class="card"><h3>Strategies for each game</h3><p>The techniques of the five games that have them, in the order you learn them.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="learn" aria-labelledby="learn-h">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Learn sudoku</p>
+          <h2 id="learn-h">Twenty-one techniques, each with a lesson.</h2>
+          <p class="sub">Every technique has a plain explanation, a real board you step through with the proof written out, and a drill: eight boards where the technique is the next move. Point out the cells that prove it. Five right without help marks it learned. <strong>The method</strong> shows how to work through any board.</p>
+        </div>
+        <div class="levels">
+          <article class="card folder">
+            <span class="tab" style="background: var(--belt-beginner); color: var(--ink)">Beginner</span>
+            <h3>One digit left</h3>
+            <p>Cells where only one digit can go. A board you can finish without notes.</p>
+            <p class="tech">Naked single</p>
+          </article>
+          <article class="card folder">
+            <span class="tab" style="background: var(--belt-easy); color: var(--ink)">Easy</span>
+            <h3>One place left</h3>
+            <p>Digits that fit in only one cell of a row, column or box.</p>
+            <p class="tech">Hidden single</p>
+          </article>
+          <article class="card folder">
+            <span class="tab" style="background: var(--belt-medium); color: var(--card)">Medium</span>
+            <h3>Overlap</h3>
+            <p>Two digits locked into two cells, or one digit confined to where a box and a line overlap.</p>
+            <p class="tech">Pointing, box/line, naked and hidden pairs</p>
+          </article>
+          <article class="card folder">
+            <span class="tab" style="background: var(--belt-hard); color: var(--card)">Hard</span>
+            <h3>Locking</h3>
+            <p>Three digits in three cells lock everyone else out. The pigeonhole principle.</p>
+            <p class="tech">Naked and hidden triples and quads</p>
+          </article>
+          <article class="card folder">
+            <span class="tab" style="background: var(--belt-expert); color: var(--card)">Expert</span>
+            <h3>Fish and either&#8211;or</h3>
+            <p>A digit confined to two rows, or a choice where both answers lead to the same place.</p>
+            <p class="tech">X-Wing, XY-Wing, Skyscraper, 2-String Kite</p>
+          </article>
+          <article class="card folder">
+            <span class="tab" style="background: var(--belt-extreme); color: var(--card)">Extreme</span>
+            <h3>Chains, colouring and uniqueness</h3>
+            <p>Long arguments that you follow one link at a time.</p>
+            <p class="tech">Swordfish, XYZ-Wing, W-Wing, Empty Rectangle, Simple Colouring, Jellyfish, Unique Rectangle</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="calm-h">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Calm on purpose</p>
+          <h2 id="calm-h">Nothing here wants your attention.</h2>
+        </div>
+        <div class="calm">
+          <div class="card"><h3>No ads. No tracking. No account.</h3><p>Open it and play. There is nothing to sign up for, and nothing you do leaves your phone.</p></div>
+          <div class="card"><h3>Works offline</h3><p>Boards are made on your phone or come with the app. Only buying or restoring Kata Pro needs a connection.</p></div>
+          <div class="card"><h3>Stays on your phone</h3><p>Boards, progress and settings live on the device. Kata collects no data.</p></div>
+          <div class="card"><h3>A streak that forgives</h3><p>One day off a week does not break it.</p></div>
+        </div>
+        <p class="aside"><strong>Doing a sudoku in a book?</strong> Photograph it or type it in, and ask Kata for hints. The digits are read on your phone, and you check them before you play.</p>
+      </div>
+    </section>
+
+    <section class="band" id="plus" aria-labelledby="plus-h">
+      <div class="wrap">
+        <div class="head">
+          <p class="eyebrow">Free and Pro</p>
+          <h2 id="plus-h">Four games are free. Pro adds four more.</h2>
+        </div>
+        <div class="twocol">
+          <div class="card plan">
+            <h3>Free</h3>
+            <!-- Pro (PaywallView, PlusGate): to gratis teknikker per spill, tolv i sudoku; ett engangskjøp (Plus.storekit). -->
+            <ul>
+              <li>Sudoku on all six levels, Tenbin, Light Up and Star Battle</li>
+              <li>Hints, with the proof, on every board</li>
+              <li>Today's boards and the past week of daily boards, in each of the four</li>
+              <li>One Pro game to try for free each week</li>
+              <li>Lessons and drills for the first twelve sudoku techniques, and the first two in Tenbin, Light Up and Star Battle</li>
+              <li>Clock on or off, notes, undo and statistics</li>
+            </ul>
+          </div>
+          <div class="card plan plus">
+            <h3>Kata Pro</h3>
+            <ul>
+              <li>Killer Sudoku, Pipes, Ink Levels and Nonogram</li>
+              <li>Every lesson and drill: the nine advanced sudoku techniques, and the harder ones in Killer Sudoku, Tenbin, Light Up and Star Battle</li>
+              <li>The review of a solved board: the hardest step, and the logic behind each hint and mistake. Kept for your 30 most recent boards in each game</li>
+            </ul>
+            <p class="note">Through the App Store: once for life, or a yearly subscription you can cancel any time in your App Store settings. The prices are shown in the app, in your currency.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" id="get" aria-labelledby="get-h">
+      <div class="wrap">
+        <div class="card">
+          <img src="/img/icon.png" alt="" width="96" height="96" class="app-icon" loading="lazy">
+          <h2 id="get-h">Kata – Sudoku &amp; Logic Puzzles</h2>
+          <p>For iPhone. Ideas or problems? Tap <strong>Send feedback</strong> in the app, or write to <a href="mailto:madebyslab@gmail.com">madebyslab@gmail.com</a>. It comes straight to the people who make Kata. The <a href="/support">support page</a> has the rest. The <a href="/privacy">privacy page</a> is short, because there is little to say.</p>
+          <span class="button store soon" data-store>Coming soon on the App Store</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <nav aria-label="Legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/support">Support</a>
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a>
+        <a href="mailto:madebyslab@gmail.com">madebyslab@gmail.com</a>
+      </nav>
+      <small>&copy; 2026 SLAB Studios. App Store is a service mark of Apple Inc.</small>
+    </div>
+  </footer>
+
+  <script src="/store.js"></script>
+  <script src="/demo.js"></script>
+</body>
+</html>
